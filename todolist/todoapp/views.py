@@ -46,7 +46,7 @@ def signup(request):
     return render(request,'signup.html')
 
 @login_required(login_url='signin')
-def welcome(request):
+def welcome(request,id):
     mem=todolists.objects.all().order_by('-id')
     return render(request,'welcome.html',{'mem':mem})
 
