@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block body %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center" style="margin-top: 150px">
+        <div class="col-sm-10 text-center">
+            <h1 style="color: white;font-weight: bold;">Welcome <span  style="font-weight: bold;color: tomato;">{{user.username}}</span></h1>
+            
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-8 grid-margin">       
+        <div class="card" >
+            <div class="card-body">
+                <h4 class="card-title " style="float:left;">My Todo List</h4>     
+                <button type="button" class="btn btn-outline-info pull-right mr-3" style="float:right;" onclick="location.href='{% url 'mytodolist' %}'">
+                    <i class="mdi mdi-equal-box"></i>Add New</button> 
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-2" >       
+                    <form action="/search/" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <button type="submit" style="border: none;"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="myTable">
+                        <thead>
+                            <tr>
+                                <th class="text-dark">SlNo</th>
+                                <th class="text-dark">Task</th>
+                                <th class="text-dark">Description</th>
+                                
+                                <th class="text-dark">Action</th>
+                                <th class="text-dark">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if mem %}
+                            {% for t in mem %}
+                            <tr>
+                                {% if t.status == '0' %} 
+                                <td>{{forloop.counter}}</td>
+                                <td>{{t.Task}}</td>  
+                                <td>{{t.Description}}</td>
+                                {% else %}
+                                <td style="color:red;">{{forloop.counter}}</td>
+                                <td  style="color:red;"><s>{{t.Task}}</s></td>  
+                                <td  style="color:red;"><s>{{t.Description}}</s></td>
+                                {% endif %}
+                                <!--<form action="coursedelete?tid={{t.id}}" method="post">-->
+                                <form action="{% url 'listdelete' t.id %}" method="post">
+                                    {% csrf_token %}
+                                    <td>
+                                        <button type="button" data-toggle="modal" data-target="#myModal{{t.id}}" class="btn btn-social-icon-text btn-outline-primary"><i class="mdi mdi-tooltip-edit"></i>Update</button>
+                                        <button type="submit" class="btn btn-social-icon-text btn-outline-danger" onclick="return confirm('Are you sure you want to delete this item?');"><i class="mdi mdi-delete-forever"></i>Delete</button>
+                                    </td>
+                                </form>
+
+                                <form action="{% url 'completestatus' t.id %}" method="post">
+                                    {% csrf_token %}
+                                    <td> 
+                                        <button type="submit" class="btn btn-social-icon-text btn-outline-danger" ><i class="mdi mdi-refresh"></i>completed</button>
+                                    </td>
+                                </form>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <h5 style="text-align:center">Nothing to display...</h5>
+                            {% endif %}         
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for t in mem %}
+    <div class="modal fade" id="myModal{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form action="{% url 'listupdate' t.id %}" method="post" enctype="multipart/form-data" autocomplete="off">
+                {%csrf_token%}
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-light bg-dark">
+                <div class="form-group row pt-2">
+                    <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control text-light" name="description"value={{t.Description}} required /></div>
+                    </div>
+                    <br />
+                    <div class="row pt-2">
+                    
+                        <div class="col-sm-5"></div>
+                        <div class="col-sm-7" class="pull-right">
+                            <button type="submit" class="btn btn-outline-warning btn-icon-text"><i class="mdi mdi-refresh btn-icon-prepend"></i>Update</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  {%endfor %}
+    <!-- modal end -->
+   
+{% endblock %}
+{% endblock %}
