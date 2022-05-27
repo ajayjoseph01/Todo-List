@@ -46,7 +46,7 @@ def signup(request):
     return render(request,'signup.html')
 
 @login_required(login_url='signin')
-def welcome(request,id):
+def welcome(request):
     mem=todolists.objects.all().order_by('-id')
     return render(request,'welcome.html',{'mem':mem})
 
@@ -128,6 +128,6 @@ def completestatus(request,id):
 
 def search(request):
     given_name=request.POST['search']
-    pro=todolists.objects.filter(Task__icontains=given_name)
+    pro=todolists.objects.filter(Task__icontains = given_name)
     #pro=products.objects.filter(description__icontains=given_name)   
     return render(request,'welcome.html',{'pro':pro})
