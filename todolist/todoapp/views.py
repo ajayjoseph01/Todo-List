@@ -99,14 +99,9 @@ def mytodolist(request):
         mem.Task=request.POST['task']
         mem.Description=request.POST['description']
         mem.status = 0
-        mem.user_id= users.id
-        try:
-            user= todolists.objects.get(Task=mem.Task)
-            context = {'msg': 'Course already exists!!!....  Try to add another course','z':z}
-            return render(request,'todolist.html',context)
-        except :
-            mem.save()
-            return redirect('/welcome')
+        mem.user_id= users.id    
+        mem.save()
+        return redirect('/welcome')
     return render(request,'todolist.html')
 
 def listupdate(request,id):
