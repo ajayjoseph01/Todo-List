@@ -29,7 +29,7 @@ urlpatterns = [
     path('updatepass/<int:id>',v.updatepass,name="updatepass"),
     path('logout',v.logout,name="logout"),
 
-    path('mytodolist',v.mytodolist,name="mytodolist"),
+    path('mytodolist/',v.mytodolist,name="mytodolist"),
     path('listupdate/<int:id>',v.listupdate,name="listupdate"),
     path('listdelete/<int:id>',v.listdelete,name="listdelete"),
     path('completestatus/<int:id>',v.completestatus,name="completestatus"),

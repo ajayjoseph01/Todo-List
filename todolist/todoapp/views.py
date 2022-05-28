@@ -47,7 +47,8 @@ def signup(request):
 
 @login_required(login_url='signin')
 def welcome(request):
-    mem=todolists.objects.all().order_by('-id')
+    users=request.user
+    mem=todolists.objects.filter(user_id=users.id).order_by('-id')
     return render(request,'welcome.html',{'mem':mem})
 
 @login_required(login_url='signin')
@@ -94,9 +95,11 @@ def logout(request):
 def mytodolist(request):
     mem=todolists()
     if request.method=="POST":
+        users=request.user
         mem.Task=request.POST['task']
         mem.Description=request.POST['description']
         mem.status = 0
+        mem.user_id= users.id
         try:
             user= todolists.objects.get(Task=mem.Task)
             context = {'msg': 'Course already exists!!!....  Try to add another course','z':z}
@@ -127,7 +130,8 @@ def completestatus(request,id):
     return redirect('welcome')
 
 def search(request):
+    users=request.user
     given_name=request.POST['search']
-    pro=todolists.objects.filter(Task__icontains = given_name)
-    #pro=products.objects.filter(description__icontains=given_name)   
-    return render(request,'welcome.html',{'pro':pro})
+    mem=todolists.objects.filter(user_id=users.id,Task__icontains = given_name)
+    #mem=products.objects.filter(user_id=users.id,Description__icontains=given_name)   
+    return render(request,'welcome.html',{'mem':mem})
